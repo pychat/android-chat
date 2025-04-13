@@ -238,8 +238,8 @@ public class ConversationInputPanel extends FrameLayout implements IEmotionSelec
         sharedPreferences = getContext().getSharedPreferences("sticker", Context.MODE_PRIVATE);
 
         // emotion
-        emotionLayout.setEmotionAddVisiable(true);
-        emotionLayout.setEmotionSettingVisiable(true);
+        emotionLayout.setEmotionAddVisiable(false);
+        emotionLayout.setEmotionSettingVisiable(false);
 
         // audio record panel
         audioRecorderPanel = new AudioRecorderPanel(getContext());
@@ -356,7 +356,7 @@ public class ConversationInputPanel extends FrameLayout implements IEmotionSelec
             hideEmotionLayout();
             rootLinearLayout.showSoftkey(editText);
         } else {
-            hideAudioButton();
+            emotionImageView.setImageResource(R.mipmap.ic_chat_keyboard);
             showEmotionLayout();
         }
     }
@@ -411,7 +411,7 @@ public class ConversationInputPanel extends FrameLayout implements IEmotionSelec
 
     private void mentionGroupMember() {
         Intent intent = new Intent(activity, MentionGroupMemberActivity.class);
-        GroupViewModel groupViewModel =  WfcUIKit.getAppScopeViewModel(GroupViewModel.class);
+        GroupViewModel groupViewModel = WfcUIKit.getAppScopeViewModel(GroupViewModel.class);
         GroupInfo groupInfo = groupViewModel.getGroupInfo(conversation.target, false);
         intent.putExtra("groupInfo", groupInfo);
         fragment.startActivityForResult(intent, REQUEST_PICK_MENTION_CONTACT);
@@ -684,9 +684,10 @@ public class ConversationInputPanel extends FrameLayout implements IEmotionSelec
     }
 
     private void showEmotionLayout() {
-        audioButton.setVisibility(View.GONE);
-        emotionImageView.setImageResource(R.mipmap.ic_chat_keyboard);
         rootLinearLayout.show(editText, emotionContainerFrameLayout);
+        if (audioButton.isShown()) {
+            hideAudioButton();
+        }
         if (onConversationInputPanelStateChangeListener != null) {
             onConversationInputPanelStateChangeListener.onInputPanelExpanded();
         }
